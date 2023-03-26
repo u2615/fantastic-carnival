@@ -3,7 +3,8 @@
   "display": "Node 18",
   "outDir": "lib",
   "include": ["src/**/*", "config/*"],
-  "baseUrl": "./src",
+  "exclude": ["node_modules", ".vscode"],
+  "baseUrl": ".",
 
   "compilerOptions": {
     "lib": ["es2022"],

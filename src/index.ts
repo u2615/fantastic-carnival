@@ -11,6 +11,7 @@ import {
 import * as path from "path";
 import config from "./config";
 import CommandHandler from "./commands/handler";
+import { readFile } from "node:fs/promises";
 
 // First things first: let's make the logs a bit prettier.
 LogService.setLogger(new RichConsoleLogger());
@@ -26,6 +27,14 @@ LogService.info("index", "Bot starting...");
 
 // This is the startup closure where we give ourselves an async context
 (async function () {
+  //get bot access token
+  let accessToken: string;
+  try {
+    const filePath = new URL(config.accessToken, import.meta.url);
+    accessToken = await readFile(filePath, { encoding: "utf8" });
+  } catch (e: any) {
+    LogService.error("Error reading access token from secrets : ", e.message);
+  }
   // Prepare the storage system for the bot
   const storage = new SimpleFsStorageProvider(
     path.join(config.dataPath, "bot.json")
@@ -39,7 +48,7 @@ LogService.info("index", "Bot starting...");
   // Now create the client
   const client = new MatrixClient(
     config.homeserverUrl,
-    config.accessToken,
+    accessToken,
     storage,
     cryptoStore
   );
