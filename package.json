@@ -14,7 +14,8 @@
   "author": "antoine",
   "license": "ISC",
   "dependencies": {
-    "matrix-bot-sdk": "^0.6.4"
+    "matrix-bot-sdk": "^0.6.4",
+    "xss": "^1.0.14"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.56.0",
@@ -26,7 +27,7 @@
   },
   "engines": {
     "node": ">19.8.0",
-    "pnpm": ">7.30"
+    "pnpm": ">7.30.0"
   },
   "private": true
 }
