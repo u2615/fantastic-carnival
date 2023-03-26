@@ -8,10 +8,10 @@ import {
   RustSdkCryptoStorageProvider,
   SimpleFsStorageProvider,
 } from "matrix-bot-sdk";
+import { getSecret } from "./helpers/getSecret";
 import * as path from "path";
 import config from "./config";
 import CommandHandler from "./commands/handler";
-import { readFile } from "node:fs/promises";
 
 // First things first: let's make the logs a bit prettier.
 LogService.setLogger(new RichConsoleLogger());
@@ -25,23 +25,17 @@ LogService.muteModule("Metrics");
 // Print something so we know the bot is working
 LogService.info("index", "Bot starting...");
 
-// This is the startup closure where we give ourselves an async context
-(async function () {
+try {
   //get bot access token
-  let accessToken: string;
-  try {
-    const filePath = new URL(config.accessToken, import.meta.url);
-    accessToken = await readFile(filePath, { encoding: "utf8" });
-  } catch (e: any) {
-    LogService.error("Error reading access token from secrets : ", e.message);
-  }
+  const accessToken = await getSecret(config.accessToken);
+
   // Prepare the storage system for the bot
   const storage = new SimpleFsStorageProvider(
     path.join(config.dataPath, "bot.json")
   );
 
-  // Prepare a crypto store if we need that
-  const cryptoStore = new RustSdkCryptoStorageProvider(
+  // Prepare a crypto store
+  const cryptoStore: ICryptoStorageProvider = new RustSdkCryptoStorageProvider(
     path.join(config.dataPath, "encrypted")
   );
 
@@ -62,4 +56,6 @@ LogService.info("index", "Bot starting...");
 
   LogService.info("index", "Starting sync...");
   await client.start(); // This blocks until the bot is killed
-})();
+} catch (e: any) {
+  LogService.error(`⚠️ Error !: ${e.message}`);
+}
