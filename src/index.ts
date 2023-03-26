@@ -32,12 +32,9 @@ LogService.info("index", "Bot starting...");
   );
 
   // Prepare a crypto store if we need that
-  let cryptoStore: ICryptoStorageProvider;
-  if (config.encryption) {
-    cryptoStore = new RustSdkCryptoStorageProvider(
-      path.join(config.dataPath, "encrypted")
-    );
-  }
+  const cryptoStore = new RustSdkCryptoStorageProvider(
+    path.join(config.dataPath, "encrypted")
+  );
 
   // Now create the client
   const client = new MatrixClient(
@@ -48,9 +45,7 @@ LogService.info("index", "Bot starting...");
   );
 
   // Setup the autojoin mixin (if enabled)
-  if (config.autoJoin) {
-    AutojoinRoomsMixin.setupOnClient(client);
-  }
+  AutojoinRoomsMixin.setupOnClient(client);
 
   // Prepare the command handler
   const commands = new CommandHandler(client);
