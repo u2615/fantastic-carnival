@@ -2,7 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Node 18",
   "outDir": "lib",
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "config/*"],
+  "baseUrl": "./src",
 
   "compilerOptions": {
     "lib": ["es2022"],
