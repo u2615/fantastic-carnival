@@ -6,7 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["matrix","bot"],
+  "keywords": [
+    "matrix",
+    "bot"
+  ],
   "author": "antoine",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "matrix-bot-sdk": "^0.6.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.2"
+  }
 }

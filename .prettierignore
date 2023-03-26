@@ -1,0 +1,8 @@
+#ignore everything
+/*
+#except
+!/src
+!/package.json
+!/tsconfig.json
+!/.prettierrc
+!/.eslintrc.json
