@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "matrix-bot-sdk": "^0.6.4",
+    "openai": "^3.2.1",
     "xss": "^1.0.14"
   },
   "devDependencies": {

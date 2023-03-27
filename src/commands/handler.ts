@@ -5,19 +5,19 @@ import {
   RichReply,
   UserID,
 } from "matrix-bot-sdk";
-import * as htmlEscape from "escape-html";
+import xss from "xss";
 
 // The prefix required to trigger the bot. The bot will also respond
 // to being pinged directly.
-export const COMMAND_PREFIX = "!bot";
+//export const COMMAND_PREFIX = "!bot";
 
 // This is where all of our commands will be handled
 export default class CommandHandler {
   // Just some variables so we can cache the bot's display name and ID
   // for command matching later.
-  private displayName: string;
-  private userId: string;
-  private localpart: string;
+  private displayName!: string;
+  private userId!: string;
+  private localpart!: string;
 
   constructor(private client: MatrixClient) {}
 
@@ -52,7 +52,6 @@ export default class CommandHandler {
     // Ensure that the event is a command before going on. We allow people to ping
     // the bot as well as using our COMMAND_PREFIX.
     const prefixes = [
-      COMMAND_PREFIX,
       `${this.localpart}:`,
       `${this.displayName}:`,
       `${this.userId}:`,
@@ -74,7 +73,7 @@ export default class CommandHandler {
           "!bot help             - This menu\n";
 
         const text = `Help menu:\n${help}`;
-        const html = `<b>Help menu:</b><br /><pre><code>${htmlEscape(
+        const html = `<b>Help menu:</b><br /><pre><code>${xss(
           help
         )}</code></pre>`;
         const reply = RichReply.createFor(roomId, ev, text, html); // Note that we're using the raw event, not the parsed one!
