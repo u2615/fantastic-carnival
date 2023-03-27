@@ -4,7 +4,8 @@ interface IConfig {
   homeserverUrl: string;
   dataPath: string;
   accessToken: string;
-  APIKey: string;
+  APIKeyPath: string;
+  organization: string;
 }
 
 export default <IConfig>config;
