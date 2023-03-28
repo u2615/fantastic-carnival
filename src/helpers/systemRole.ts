@@ -1,4 +1,4 @@
-import { ROLES, IRoles } from "../../config/chat";
+import { ROLES, IRoles } from "../config/chat";
 import { ChatCompletionRequestMessage } from "openai";
 
 export default (

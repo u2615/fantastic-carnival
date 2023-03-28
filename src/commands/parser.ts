@@ -1,4 +1,4 @@
-import { chatConfig } from "../../config/chat";
+import { chatConfig } from "../config/chat";
 import { UserConfig } from "./chat";
 
 export const getUserConfigMessage = (

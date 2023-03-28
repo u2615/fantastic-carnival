@@ -5,7 +5,7 @@ export interface IRoles {
 }
 
 export const ROLES:IRoles = {
-  default: 'you are a helpful ai assistant',
+  default: 'you are a helpful ai assistant. Format your answers in html.',
 }
 
 export const chatConfig = {

@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import { getSecret } from "../helpers/getSecret";
 import { formatMessage } from "../helpers/createChatObject";
 import config from "../config";
-import { chatConfig } from "../../config/chat";
+import { chatConfig } from "../config/chat";
 import systemRole from "../helpers/systemRole";
 import { FileHandle, open as openFile } from "node:fs/promises";
 
@@ -20,6 +20,12 @@ interface MessageConstruct {
 interface Config {
   [key: string]: string | number;
 }
+
+type UsageResponse = {
+  completion_tokens: number;
+  prompt_tokens: number;
+  total_tokens: number;
+};
 
 export interface UserConfig extends Config {
   model: string;
@@ -87,7 +93,7 @@ const callOpenai =
     userMessage: string;
     isReply: boolean;
     endConfig: UserConfig;
-  }): Promise<{ usage: object | undefined; answer: string }> => {
+  }): Promise<{ usage: UsageResponse | undefined; answer: string }> => {
     let fh;
     try {
       //open the cache file

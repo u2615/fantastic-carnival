@@ -8,6 +8,7 @@ import {
 import xss from "xss";
 import { helpText } from "../helpers/help";
 import { getUserConfigMessage } from "./parser";
+import callOpenai from "./chat";
 
 // The prefix required to trigger the bot. The bot will also respond
 // to being pinged directly.
@@ -63,21 +64,40 @@ export default class CommandHandler {
 
     // get rest of command
     const message = event.textBody.substring(prefixUsed.length).trim();
-
+    let text = "";
+    let html = "";
     try {
       if (message.startsWith("/help")) {
         //return runHelloCommand(roomId, event, args, this.client);
-        const text = `Help menu:\n${helpText}`;
-        const html = `<b>Help menu:</b><br /><pre><code>${xss(
+        text = `Help menu:\n${helpText}`;
+        html = `<b>Help menu:</b><br /><pre><code>${xss(
           helpText
         )}</code></pre>`;
-        const reply = RichReply.createFor(roomId, ev, text, html); // Note that we're using the raw event, not the parsed one!
-        reply["msgtype"] = "m.notice"; // Bots should always use notices
-        return this.client.sendMessage(roomId, reply);
       } else {
-        const { configError, userMessage, userConfig } =
+        const { configError, userMessage, endConfig } =
           getUserConfigMessage(message);
+        const isReply =
+          ev.content["m.relates-to"] &&
+          ev.content["m.relates_to"]["m.in_reply_to"];
+        const { usage, answer } = await callOpenai({
+          userMessage,
+          endConfig,
+          isReply,
+        });
+        text = `${
+          configError
+            ? "Error in configuration setting:\n" + configError + "\n"
+            : ""
+        } ${answer}
+        Usage: ${usage?.total_tokens}
+        Prompt tokens:${usage?.prompt_tokens} Completion: ${
+          usage?.completion_tokens
+        }  `;
+        html = text;
       }
+      const reply = RichReply.createFor(roomId, ev, text, html); // Note that we're using the raw event, not the parsed one!
+      reply["msgtype"] = "m.notice"; // Bots should always use notices
+      return this.client.sendMessage(roomId, reply);
     } catch (e) {
       // Log the error
       LogService.error("CommandHandler", e);
