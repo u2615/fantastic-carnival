@@ -3,5 +3,6 @@ export const config = {
   dataPath: 'storage',
   accessToken: '/run/secrets/botAccessToken',
   APIKeyPath: '/run/secrets/openAIKey',
+  cacheFilePath: 'chatCache.json',
   organization: 'laniakea'
 }

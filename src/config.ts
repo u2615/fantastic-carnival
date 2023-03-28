@@ -6,6 +6,7 @@ interface IConfig {
   accessToken: string;
   APIKeyPath: string;
   organization: string;
+  cacheFilePath: string;
 }
 
 export default <IConfig>config;

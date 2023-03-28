@@ -11,6 +11,5 @@ export const ROLES:IRoles = {
 export const chatConfig = {
   model: 'gtp-3.5-turbo',
   temperature: 0.8,
-  messages:[],
-  cacheFilePath: 'chatCache.json'
+  role: 'default',
  }

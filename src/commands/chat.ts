@@ -14,6 +14,14 @@ interface IRequest {
 
 interface MessageConstruct {
   messages: ChatCompletionRequestMessage[];
+  config: UserConfig;
+}
+
+interface Config {
+  [key: string]: string | number;
+}
+
+export interface UserConfig extends Config {
   model: string;
   temperature: number;
   role: string;
@@ -26,7 +34,7 @@ const CONFIGURATION = new Configuration({
 });
 
 const createRequest = (
-  { messages, model, temperature, role }: MessageConstruct,
+  { messages, config: { model, temperature, role } }: MessageConstruct,
   fn = systemRole
 ): IRequest => {
   return {
@@ -49,9 +57,7 @@ const createMessages = async (
         ]
       : [message];
   } catch (e: any) {
-    throw Error(
-      `😔 Error reading file ${chatConfig.cacheFilePath}:\n${e.message}`
-    );
+    throw Error(`😔 Error reading file ${config.cacheFilePath}:\n${e.message}`);
   }
 };
 
@@ -67,33 +73,22 @@ const writeToCache = async (
       0
     );
   } catch (e: any) {
-    throw Error(
-      `😔 Error writing file ${chatConfig.cacheFilePath}:\n${e.message}`
-    );
+    throw Error(`😔 Error writing file ${config.cacheFilePath}:\n${e.message}`);
   }
 };
 
-interface Config {
-  [key: string]: string | number;
-}
-
-export interface UserConfig extends Config {
-  model: string;
-  temperature: number;
-  role: string;
-}
-
 const callOpenai =
-  (openai: OpenAIApi) =>
+  (openai: OpenAIApi, defaultConfig = chatConfig) =>
   async (
     question: string,
     isReply: boolean,
-    userConfig?: UserConfig
+    userConfig = {}
   ): Promise<{ usage: object | undefined; answer: string }> => {
     let fh;
     try {
+      const endConfig = Object.assign(defaultConfig, userConfig);
       //open the cache file
-      const filePath = new URL(chatConfig.cacheFilePath, import.meta.url);
+      const filePath = new URL(config.cacheFilePath, import.meta.url);
       fh = await openFile(filePath, "r+");
 
       const userMessage: ChatCompletionRequestMessage = formatMessage(
@@ -105,9 +100,7 @@ const callOpenai =
       //request
       const request = createRequest({
         messages,
-        model: userConfig?.model ?? chatConfig.model,
-        temperature: userConfig?.temperature ?? chatConfig.temperature,
-        role: userConfig?.role ?? "default",
+        config: endConfig,
       });
       //call API
       const {
