@@ -6,6 +6,8 @@ import {
   UserID,
 } from "matrix-bot-sdk";
 import xss from "xss";
+import { helpText } from "../helpers/help";
+import { getUserConfigMessage } from "./parser";
 
 // The prefix required to trigger the bot. The bot will also respond
 // to being pinged directly.
@@ -59,26 +61,22 @@ export default class CommandHandler {
     const prefixUsed = prefixes.find((p) => event.textBody.startsWith(p));
     if (!prefixUsed) return; // Not a command (as far as we're concerned)
 
-    // Check to see what the arguments were to the command
-    const args = event.textBody.substring(prefixUsed.length).trim().split(" ");
+    // get rest of command
+    const message = event.textBody.substring(prefixUsed.length).trim();
 
-    // Try and figure out what command the user ran, defaulting to help
     try {
-      if (args[0] === "hello") {
-        return runHelloCommand(roomId, event, args, this.client);
-      } else {
-        const help =
-          "" +
-          "!bot hello [user]     - Say hello to a user.\n" +
-          "!bot help             - This menu\n";
-
-        const text = `Help menu:\n${help}`;
+      if (message.startsWith("/help")) {
+        //return runHelloCommand(roomId, event, args, this.client);
+        const text = `Help menu:\n${helpText}`;
         const html = `<b>Help menu:</b><br /><pre><code>${xss(
-          help
+          helpText
         )}</code></pre>`;
         const reply = RichReply.createFor(roomId, ev, text, html); // Note that we're using the raw event, not the parsed one!
         reply["msgtype"] = "m.notice"; // Bots should always use notices
         return this.client.sendMessage(roomId, reply);
+      } else {
+        const { configError, userMessage, userConfig } =
+          getUserConfigMessage(message);
       }
     } catch (e) {
       // Log the error

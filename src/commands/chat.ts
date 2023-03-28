@@ -48,7 +48,7 @@ const createMessages = async (
           message,
         ]
       : [message];
-  } catch (e) {
+  } catch (e: any) {
     throw Error(
       `😔 Error reading file ${chatConfig.cacheFilePath}:\n${e.message}`
     );
@@ -73,10 +73,14 @@ const writeToCache = async (
   }
 };
 
-interface UserConfig {
-  model?: string;
-  temperature?: number;
-  role?: string;
+interface Config {
+  [key: string]: string | number;
+}
+
+export interface UserConfig extends Config {
+  model: string;
+  temperature: number;
+  role: string;
 }
 
 const callOpenai =
