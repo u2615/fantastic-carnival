@@ -3,10 +3,10 @@ import { UserConfig } from "./chat";
 
 export const getUserConfigMessage = (
   bareMessage: string,
-  defaultConfig: UserConfig
+  defaultConfig: UserConfig = chatConfig
 ): {
   userMessage: string;
-  userConfig: UserConfig;
+  endConfig: UserConfig;
   configError: string;
 } => {
   const matches = bareMessage.match(/([^]+?)#{4,}([^]*)/);
@@ -49,11 +49,11 @@ export const getUserConfigMessage = (
     return {
       userMessage,
       configError: error,
-      userConfig: Object.assign(defaultConfig, configuration),
+      endConfig: Object.assign(defaultConfig, configuration),
     };
   }
   return {
-    userConfig: defaultConfig,
+    endConfig: defaultConfig,
     userMessage: bareMessage,
     configError: "",
   };

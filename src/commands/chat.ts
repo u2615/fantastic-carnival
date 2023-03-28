@@ -79,24 +79,27 @@ const writeToCache = async (
 
 const callOpenai =
   (openai: OpenAIApi, defaultConfig = chatConfig) =>
-  async (
-    question: string,
-    isReply: boolean,
-    userConfig = {}
-  ): Promise<{ usage: object | undefined; answer: string }> => {
+  async ({
+    userMessage,
+    isReply,
+    endConfig,
+  }: {
+    userMessage: string;
+    isReply: boolean;
+    endConfig: UserConfig;
+  }): Promise<{ usage: object | undefined; answer: string }> => {
     let fh;
     try {
-      const endConfig = Object.assign(defaultConfig, userConfig);
       //open the cache file
       const filePath = new URL(config.cacheFilePath, import.meta.url);
       fh = await openFile(filePath, "r+");
 
-      const userMessage: ChatCompletionRequestMessage = formatMessage(
-        "user",
-        question
-      );
       //get messages
-      const messages = await createMessages(userMessage, fh, isReply);
+      const messages = await createMessages(
+        formatMessage("user", userMessage),
+        fh,
+        isReply
+      );
       //request
       const request = createRequest({
         messages,
