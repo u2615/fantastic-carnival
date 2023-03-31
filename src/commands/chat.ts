@@ -132,4 +132,4 @@ const callOpenai =
     }
   };
 
-export default callOpenai(new OpenAIApi(CONFIGURATION));
+export default await callOpenai(new OpenAIApi(CONFIGURATION));
