@@ -1,5 +1,7 @@
 :warning: Le repo utilise [pnpm](https://pnpm.io/motivation) comme gestionnaire de dépendence.
 
+Un bot pour matrix visant à chatter avec l'IA d'openai.
+
 ## TODO
 
 - [ ] check secruity problems in dependencies
